@@ -24,8 +24,7 @@ class ConvertMappingDoctrineCommand extends ConvertMappingCommand
 {
     use OrmProxyCommand;
 
-    /** @return void */
-    protected function configure()
+    protected function configure(): void
     {
         parent::configure();
 
