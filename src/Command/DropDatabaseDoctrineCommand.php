@@ -29,8 +29,7 @@ class DropDatabaseDoctrineCommand extends DoctrineCommand
 
     public const RETURN_CODE_NO_FORCE = 2;
 
-    /** @return void */
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('doctrine:database:drop')
