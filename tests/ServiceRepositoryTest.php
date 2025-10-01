@@ -73,7 +73,6 @@ class ServiceRepositoryTest extends TestCase
             'framework' => [
                 'http_method_override' => false,
                 'php_errors' => ['log' => true],
-                'annotations' => ['enabled' => false],
                 'handle_all_throwables' => true,
             ],
         ], $container);

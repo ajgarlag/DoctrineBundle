@@ -46,7 +46,6 @@ class TestKernel extends Kernel
             $container->loadFromExtension('framework', [
                 'secret' => 'F00',
                 'http_method_override' => false,
-                'annotations' => false,
                 'php_errors' => ['log' => true],
                 'handle_all_throwables' => true,
             ]);

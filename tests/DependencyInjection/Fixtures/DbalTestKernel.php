@@ -44,10 +44,13 @@ class DbalTestKernel extends Kernel
             $container->loadFromExtension('framework', [
                 'secret' => 'F00',
                 'http_method_override' => false,
-                'annotations' => [
-                    'enabled' => version_compare(Kernel::VERSION, '7.0.0', '<'),
-                ],
             ]);
+
+            if (version_compare(Kernel::VERSION, '7.0.0', '<')) {
+                $container->loadFromExtension('framework', [
+                    'annotations' => ['enabled' => true],
+                ]);
+            }
 
             $container->loadFromExtension('doctrine', [
                 'dbal' => $this->dbalConfig,

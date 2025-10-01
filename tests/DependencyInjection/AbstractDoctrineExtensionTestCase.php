@@ -47,6 +47,7 @@ use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\DependencyInjection\ServiceLocator;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\VarExporter\ProxyHelper;
 
 use function array_filter;
 use function array_intersect_key;
@@ -1508,6 +1509,10 @@ abstract class AbstractDoctrineExtensionTestCase extends TestCase
             self::markTestSkipped('This test requires PHP 8.4+');
         }
 
+        if (! method_exists(ProxyHelper::class, 'generateLazyGhost')) {
+            self::markTestSkipped('This test requires symfony/var-exporter < 8');
+        }
+
         $container     = $this->loadContainer(
             fixture: 'orm_native_lazy_objects_default',
             withMinimalOrmConfig: false,
@@ -1550,6 +1555,10 @@ abstract class AbstractDoctrineExtensionTestCase extends TestCase
 
         if (PHP_VERSION_ID < 80400) {
             self::markTestSkipped('This test requires PHP 8.4+');
+        }
+
+        if (! method_exists(ProxyHelper::class, 'generateLazyGhost')) {
+            self::markTestSkipped('This test requires symfony/var-exporter < 8');
         }
 
         $container     = $this->loadContainer(
