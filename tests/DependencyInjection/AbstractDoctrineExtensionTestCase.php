@@ -277,6 +277,7 @@ abstract class AbstractDoctrineExtensionTestCase extends TestCase
         $this->assertCount(0, $calls);
     }
 
+    #[IgnoreDeprecations]
     public function testDbalLoadDisableTypeComments(): void
     {
         $container = $this->loadContainer(fixture: 'dbal_disable_type_comments', withMinimalOrmConfig: false);
@@ -297,6 +298,7 @@ abstract class AbstractDoctrineExtensionTestCase extends TestCase
         $this->assertCount(0, $calls);
     }
 
+    #[IgnoreDeprecations]
     public function testDbalSchemaManagerFactory(): void
     {
         $container = $this->loadContainer(fixture: 'dbal_schema_manager_factory', withMinimalOrmConfig: false);
@@ -559,6 +561,7 @@ abstract class AbstractDoctrineExtensionTestCase extends TestCase
     }
 
     /** Remove the attribute and keep the test in 3.0.x */
+    #[IgnoreDeprecations]
     public function testMultipleEntityManagersMappingBundleDefinitions(): void
     {
         if (! interface_exists(EntityManagerInterface::class)) {
@@ -707,6 +710,7 @@ abstract class AbstractDoctrineExtensionTestCase extends TestCase
     }
 
     #[DataProvider('cacheConfigProvider')]
+    #[IgnoreDeprecations]
     public function testCacheConfig(string|null $expectedClass, string $entityManagerName, string|null $cacheGetter): void
     {
         if (! interface_exists(EntityManagerInterface::class)) {
@@ -952,6 +956,7 @@ abstract class AbstractDoctrineExtensionTestCase extends TestCase
         $this->loadContainer('orm_no_lazy_ghost');
     }
 
+    #[IgnoreDeprecations]
     public function testDisablingReportFieldsWhereDeclaredOnOrm3Throws(): void
     {
         if (! interface_exists(EntityManagerInterface::class)) {
@@ -996,6 +1001,7 @@ abstract class AbstractDoctrineExtensionTestCase extends TestCase
         $this->loadContainer('orm_report_fields');
     }
 
+    #[IgnoreDeprecations]
     public function testSettingDisableTypeCommentsWithDbal4IsDeprecated(): void
     {
         if (method_exists(Connection::class, 'getEventManager')) {
@@ -1016,6 +1022,7 @@ abstract class AbstractDoctrineExtensionTestCase extends TestCase
         $this->loadContainer(fixture: 'dbal_disable_type_comments', withMinimalOrmConfig: false);
     }
 
+    #[IgnoreDeprecations]
     public function testSettingUseSavepointsWithDbal4IsDeprecated(): void
     {
         if (method_exists(Connection::class, 'getEventManager')) {
@@ -1219,6 +1226,7 @@ abstract class AbstractDoctrineExtensionTestCase extends TestCase
         }
     }
 
+    #[IgnoreDeprecations]
     public function testWellKnownSchemaFilterDefaultTables(): void
     {
         $container = $this->getContainer([]);
@@ -1241,6 +1249,7 @@ abstract class AbstractDoctrineExtensionTestCase extends TestCase
         $this->assertTrue($filter->__invoke('anything_else'));
     }
 
+    #[IgnoreDeprecations]
     public function testWellKnownSchemaFilterOverriddenTables(): void
     {
         $container = $this->getContainer([]);
@@ -1485,6 +1494,7 @@ abstract class AbstractDoctrineExtensionTestCase extends TestCase
         $this->assertFalse($collectorDefinition->getArguments()[1]);
     }
 
+    #[IgnoreDeprecations]
     public function testNativeLazyObjectsWithoutConfig(): void
     {
         if (! interface_exists(EntityManagerInterface::class)) {
@@ -1532,6 +1542,7 @@ abstract class AbstractDoctrineExtensionTestCase extends TestCase
         $this->assertTrue($entityManager->getConfiguration()->isNativeLazyObjectsEnabled());
     }
 
+    #[IgnoreDeprecations]
     public function testNativeLazyObjectsWithConfigFalse(): void
     {
         if (! interface_exists(EntityManagerInterface::class)) {
