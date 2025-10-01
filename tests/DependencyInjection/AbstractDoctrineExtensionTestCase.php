@@ -81,7 +81,6 @@ abstract class AbstractDoctrineExtensionTestCase extends TestCase
         $loadPhp->import('minimal_orm.php');
     }
 
-    #[IgnoreDeprecations]
     public function testDbalLoadFromXmlMultipleConnections(): void
     {
         $container = $this->loadContainer(fixture: 'dbal_service_multiple_connections', withMinimalOrmConfig: false);
@@ -151,7 +150,6 @@ abstract class AbstractDoctrineExtensionTestCase extends TestCase
         $this->assertSame('utf8', $config['charset']);
     }
 
-    #[IgnoreDeprecations]
     public function testDbalLoadFromXmlSingleConnections(): void
     {
         $container = $this->loadContainer(fixture: 'dbal_service_single_connection', withMinimalOrmConfig: false);
@@ -205,7 +203,6 @@ abstract class AbstractDoctrineExtensionTestCase extends TestCase
         $this->assertFalse(isset($config['override_url']));
     }
 
-    #[IgnoreDeprecations]
     public function testDbalDbnameSuffix(): void
     {
         $container = $this->loadContainer(fixture: 'dbal_dbname_suffix', withMinimalOrmConfig: false);
@@ -215,7 +212,6 @@ abstract class AbstractDoctrineExtensionTestCase extends TestCase
         $this->assertSame('_test', $config['dbname_suffix']);
     }
 
-    #[IgnoreDeprecations]
     public function testDbalDriverScheme(): void
     {
         $container = $this->loadContainer(fixture: 'dbal_driver_schemes', withMinimalOrmConfig: false);
@@ -226,7 +222,6 @@ abstract class AbstractDoctrineExtensionTestCase extends TestCase
         $this->assertSame('pdo_mysql', $schemes['mysql']);
     }
 
-    #[IgnoreDeprecations]
     public function testDbalLoadSinglePrimaryReplicaConnection(): void
     {
         $container = $this->loadContainer(fixture: 'dbal_service_single_primary_replica_connection', withMinimalOrmConfig: false);
@@ -282,7 +277,6 @@ abstract class AbstractDoctrineExtensionTestCase extends TestCase
         $this->assertCount(0, $calls);
     }
 
-    #[IgnoreDeprecations]
     public function testDbalLoadDisableTypeComments(): void
     {
         $container = $this->loadContainer(fixture: 'dbal_disable_type_comments', withMinimalOrmConfig: false);
@@ -303,7 +297,6 @@ abstract class AbstractDoctrineExtensionTestCase extends TestCase
         $this->assertCount(0, $calls);
     }
 
-    #[IgnoreDeprecations]
     public function testDbalSchemaManagerFactory(): void
     {
         $container = $this->loadContainer(fixture: 'dbal_schema_manager_factory', withMinimalOrmConfig: false);
@@ -325,7 +318,6 @@ abstract class AbstractDoctrineExtensionTestCase extends TestCase
         );
     }
 
-    #[IgnoreDeprecations]
     public function testDbalResultCache(): void
     {
         $container = $this->loadContainer(fixture: 'dbal_result_cache', withMinimalOrmConfig: false);
@@ -346,7 +338,6 @@ abstract class AbstractDoctrineExtensionTestCase extends TestCase
         );
     }
 
-    #[IgnoreDeprecations]
     public function testLoadSimpleSingleConnection(): void
     {
         if (! interface_exists(EntityManagerInterface::class)) {
@@ -383,7 +374,6 @@ abstract class AbstractDoctrineExtensionTestCase extends TestCase
     /**
      * The PDO driver doesn't require a database name to be to set when connecting to a database server
      */
-    #[IgnoreDeprecations]
     public function testLoadSimpleSingleConnectionWithoutDbName(): void
     {
         if (! interface_exists(EntityManagerInterface::class)) {
@@ -416,7 +406,6 @@ abstract class AbstractDoctrineExtensionTestCase extends TestCase
         ]);
     }
 
-    #[IgnoreDeprecations]
     public function testLoadSingleConnection(): void
     {
         if (! interface_exists(EntityManagerInterface::class)) {
@@ -453,7 +442,6 @@ abstract class AbstractDoctrineExtensionTestCase extends TestCase
         $this->assertDICDefinitionMethodCallOnce($configDef, 'setDefaultRepositoryClassName', ['Acme\Doctrine\Repository']);
     }
 
-    #[IgnoreDeprecations]
     public function testLoadMultipleConnections(): void
     {
         if (! interface_exists(EntityManagerInterface::class)) {
@@ -514,7 +502,6 @@ abstract class AbstractDoctrineExtensionTestCase extends TestCase
         $this->assertSame(ArrayAdapter::class, $definition->getClass());
     }
 
-    #[IgnoreDeprecations]
     public function testEntityManagerMetadataCacheDriverConfiguration(): void
     {
         if (! interface_exists(EntityManagerInterface::class)) {
@@ -530,7 +517,6 @@ abstract class AbstractDoctrineExtensionTestCase extends TestCase
         $this->assertDICDefinitionClass($definition, PhpArrayAdapter::class);
     }
 
-    #[IgnoreDeprecations]
     public function testSingleEntityManagerMultipleMappingBundleDefinitions(): void
     {
         if (! interface_exists(EntityManagerInterface::class)) {
@@ -573,7 +559,6 @@ abstract class AbstractDoctrineExtensionTestCase extends TestCase
     }
 
     /** Remove the attribute and keep the test in 3.0.x */
-    #[IgnoreDeprecations]
     public function testMultipleEntityManagersMappingBundleDefinitions(): void
     {
         if (! interface_exists(EntityManagerInterface::class)) {
@@ -615,7 +600,6 @@ abstract class AbstractDoctrineExtensionTestCase extends TestCase
         ]);
     }
 
-    #[IgnoreDeprecations]
     public function testSingleEntityManagerDefaultTableOptions(): void
     {
         if (! interface_exists(EntityManagerInterface::class)) {
@@ -639,7 +623,6 @@ abstract class AbstractDoctrineExtensionTestCase extends TestCase
         $this->assertEquals('InnoDB', $defaults['engine']);
     }
 
-    #[IgnoreDeprecations]
     public function testSetTypes(): void
     {
         $container = $this->loadContainer(fixture: 'dbal_types', withMinimalOrmConfig: false);
@@ -651,7 +634,6 @@ abstract class AbstractDoctrineExtensionTestCase extends TestCase
         $this->assertEquals('%doctrine.dbal.connection_factory.types%', $container->getDefinition('doctrine.dbal.connection_factory')->getArgument(0));
     }
 
-    #[IgnoreDeprecations]
     public function testSetCustomFunctions(): void
     {
         if (! interface_exists(EntityManagerInterface::class)) {
@@ -666,7 +648,6 @@ abstract class AbstractDoctrineExtensionTestCase extends TestCase
         $this->assertDICDefinitionMethodCallOnce($definition, 'addCustomDatetimeFunction', ['test_datetime', TestDatetimeFunction::class]);
     }
 
-    #[IgnoreDeprecations]
     public function testSetNamingStrategy(): void
     {
         if (! interface_exists(EntityManagerInterface::class)) {
@@ -682,7 +663,6 @@ abstract class AbstractDoctrineExtensionTestCase extends TestCase
         $this->assertDICDefinitionMethodCallOnce($def2, 'setNamingStrategy', [0 => new Reference('doctrine.orm.naming_strategy.underscore')]);
     }
 
-    #[IgnoreDeprecations]
     public function testSetIdentityGenerationPreferences(): void
     {
         if (! interface_exists(EntityManagerInterface::class)) {
@@ -698,7 +678,6 @@ abstract class AbstractDoctrineExtensionTestCase extends TestCase
         $this->assertDICDefinitionMethodCallOnce($def2, 'setIdentityGenerationPreferences', [0 => [PostgreSQLPlatform::class => ClassMetadata::GENERATOR_TYPE_SEQUENCE]]);
     }
 
-    #[IgnoreDeprecations]
     public function testSetQuoteStrategy(): void
     {
         if (! interface_exists(EntityManagerInterface::class)) {
@@ -714,7 +693,6 @@ abstract class AbstractDoctrineExtensionTestCase extends TestCase
         $this->assertDICDefinitionMethodCallOnce($def2, 'setQuoteStrategy', [0 => new Reference('doctrine.orm.quote_strategy.ansi')]);
     }
 
-    #[IgnoreDeprecations]
     public function testSetTypedFieldMapper(): void
     {
         if (! interface_exists(EntityManagerInterface::class)) {
@@ -729,7 +707,6 @@ abstract class AbstractDoctrineExtensionTestCase extends TestCase
     }
 
     #[DataProvider('cacheConfigProvider')]
-    #[IgnoreDeprecations]
     public function testCacheConfig(string|null $expectedClass, string $entityManagerName, string|null $cacheGetter): void
     {
         if (! interface_exists(EntityManagerInterface::class)) {
@@ -842,7 +819,6 @@ abstract class AbstractDoctrineExtensionTestCase extends TestCase
         ];
     }
 
-    #[IgnoreDeprecations]
     public function testSecondLevelCache(): void
     {
         if (! interface_exists(EntityManagerInterface::class)) {
@@ -913,7 +889,6 @@ abstract class AbstractDoctrineExtensionTestCase extends TestCase
         $this->assertEquals('doctrine.orm.default_second_level_cache.region_cache_driver', $slcFactoryArgs[1]);
     }
 
-    #[IgnoreDeprecations]
     public function testSingleEMSetCustomFunctions(): void
     {
         if (! interface_exists(EntityManagerInterface::class)) {
@@ -926,7 +901,6 @@ abstract class AbstractDoctrineExtensionTestCase extends TestCase
         $this->assertDICDefinitionMethodCallOnce($definition, 'addCustomStringFunction', ['test_string', TestStringFunction::class]);
     }
 
-    #[IgnoreDeprecations]
     public function testAddCustomHydrationMode(): void
     {
         if (! interface_exists(EntityManagerInterface::class)) {
@@ -940,7 +914,6 @@ abstract class AbstractDoctrineExtensionTestCase extends TestCase
         $this->assertDICDefinitionMethodCallOnce($definition, 'addCustomHydrationMode', ['test_hydrator', TestHydrator::class]);
     }
 
-    #[IgnoreDeprecations]
     public function testAddFilter(): void
     {
         if (! interface_exists(EntityManagerInterface::class)) {
@@ -964,7 +937,6 @@ abstract class AbstractDoctrineExtensionTestCase extends TestCase
         $this->assertCount(2, $entityManager->getFilters()->getEnabledFilters());
     }
 
-    #[IgnoreDeprecations]
     public function testDisablingLazyGhostOnOrm3Throws(): void
     {
         if (! interface_exists(EntityManagerInterface::class)) {
@@ -980,7 +952,6 @@ abstract class AbstractDoctrineExtensionTestCase extends TestCase
         $this->loadContainer('orm_no_lazy_ghost');
     }
 
-    #[IgnoreDeprecations]
     public function testDisablingReportFieldsWhereDeclaredOnOrm3Throws(): void
     {
         if (! interface_exists(EntityManagerInterface::class)) {
@@ -997,7 +968,6 @@ abstract class AbstractDoctrineExtensionTestCase extends TestCase
     }
 
     /** @group legacy */
-    #[IgnoreDeprecations]
     public function testEnablingReportFieldsWhereDeclaredOnOrm3IsDeprecated(): void
     {
         if (! interface_exists(EntityManagerInterface::class)) {
@@ -1026,7 +996,6 @@ abstract class AbstractDoctrineExtensionTestCase extends TestCase
         $this->loadContainer('orm_report_fields');
     }
 
-    #[IgnoreDeprecations]
     public function testSettingDisableTypeCommentsWithDbal4IsDeprecated(): void
     {
         if (method_exists(Connection::class, 'getEventManager')) {
@@ -1047,7 +1016,6 @@ abstract class AbstractDoctrineExtensionTestCase extends TestCase
         $this->loadContainer(fixture: 'dbal_disable_type_comments', withMinimalOrmConfig: false);
     }
 
-    #[IgnoreDeprecations]
     public function testSettingUseSavepointsWithDbal4IsDeprecated(): void
     {
         if (method_exists(Connection::class, 'getEventManager')) {
@@ -1068,7 +1036,6 @@ abstract class AbstractDoctrineExtensionTestCase extends TestCase
         $this->loadContainer(fixture: 'dbal_use_savepoints', withMinimalOrmConfig: false);
     }
 
-    #[IgnoreDeprecations]
     public function testResolveTargetEntity(): void
     {
         if (! interface_exists(EntityManagerInterface::class)) {
@@ -1085,7 +1052,6 @@ abstract class AbstractDoctrineExtensionTestCase extends TestCase
         $this->assertEquals(['doctrine.event_listener' => [['event' => 'loadClassMetadata'], ['event' => 'onClassMetadataNotFound']]], $tags);
     }
 
-    #[IgnoreDeprecations]
     public function testSchemaIgnoreClasses(): void
     {
         if (! interface_exists(EntityManagerInterface::class)) {
@@ -1099,7 +1065,6 @@ abstract class AbstractDoctrineExtensionTestCase extends TestCase
         $this->assertDICDefinitionMethodCallOnce($def1, 'setSchemaIgnoreClasses', [0 => ['Class\A', 'Class\B']]);
     }
 
-    #[IgnoreDeprecations]
     public function testFetchModeSubselectBatchSize(): void
     {
         if (! interface_exists(EntityManagerInterface::class)) {
@@ -1113,7 +1078,6 @@ abstract class AbstractDoctrineExtensionTestCase extends TestCase
         $this->assertDICDefinitionMethodCallOnce($def1, 'setEagerFetchBatchSize', [10000]);
     }
 
-    #[IgnoreDeprecations]
     public function testAttachEntityListeners(): void
     {
         if (! interface_exists(EntityManagerInterface::class)) {
@@ -1191,7 +1155,6 @@ abstract class AbstractDoctrineExtensionTestCase extends TestCase
         ]);
     }
 
-    #[IgnoreDeprecations]
     public function testDbalAutoCommit(): void
     {
         $container = $this->loadContainer(fixture: 'dbal_auto_commit', withMinimalOrmConfig: false);
@@ -1200,7 +1163,6 @@ abstract class AbstractDoctrineExtensionTestCase extends TestCase
         $this->assertDICDefinitionMethodCallOnce($definition, 'setAutoCommit', [false]);
     }
 
-    #[IgnoreDeprecations]
     public function testDbalOracleConnectstring(): void
     {
         $container = $this->loadContainer(fixture: 'dbal_oracle_connectstring', withMinimalOrmConfig: false);
@@ -1209,7 +1171,6 @@ abstract class AbstractDoctrineExtensionTestCase extends TestCase
         $this->assertSame('scott@sales-server:1521/sales.us.example.com', $config['connectstring']);
     }
 
-    #[IgnoreDeprecations]
     public function testDbalOracleInstancename(): void
     {
         $container = $this->loadContainer(fixture: 'dbal_oracle_instancename', withMinimalOrmConfig: false);
@@ -1218,7 +1179,6 @@ abstract class AbstractDoctrineExtensionTestCase extends TestCase
         $this->assertSame('mySuperInstance', $config['instancename']);
     }
 
-    #[IgnoreDeprecations]
     public function testDbalSchemaFilterNewConfig(): void
     {
         $container = $this->getContainer([]);
@@ -1259,7 +1219,6 @@ abstract class AbstractDoctrineExtensionTestCase extends TestCase
         }
     }
 
-    #[IgnoreDeprecations]
     public function testWellKnownSchemaFilterDefaultTables(): void
     {
         $container = $this->getContainer([]);
@@ -1282,7 +1241,6 @@ abstract class AbstractDoctrineExtensionTestCase extends TestCase
         $this->assertTrue($filter->__invoke('anything_else'));
     }
 
-    #[IgnoreDeprecations]
     public function testWellKnownSchemaFilterOverriddenTables(): void
     {
         $container = $this->getContainer([]);
@@ -1301,7 +1259,6 @@ abstract class AbstractDoctrineExtensionTestCase extends TestCase
         $this->assertTrue($filter->__invoke('app_session'));
     }
 
-    #[IgnoreDeprecations]
     public function testEntityListenerResolver(): void
     {
         if (! interface_exists(EntityManagerInterface::class)) {
@@ -1323,7 +1280,6 @@ abstract class AbstractDoctrineExtensionTestCase extends TestCase
         $this->assertDICDefinitionMethodCallOnce($listener, 'register', ['entity_listener2']);
     }
 
-    #[IgnoreDeprecations]
     public function testAttachEntityListenerTag(): void
     {
         if (! interface_exists(EntityManagerInterface::class)) {
@@ -1361,7 +1317,6 @@ abstract class AbstractDoctrineExtensionTestCase extends TestCase
         $this->assertDICDefinitionMethodCallOnce($attachListener, 'addEntityListener', ['My/Entity2', 'EntityListener2', 'preFlush', 'preFlushHandler']);
     }
 
-    #[IgnoreDeprecations]
     public function testAttachEntityListenersTwoConnections(): void
     {
         if (! interface_exists(EntityManagerInterface::class)) {
@@ -1390,7 +1345,6 @@ abstract class AbstractDoctrineExtensionTestCase extends TestCase
         $this->assertSame([['loadClassMetadata'], 'doctrine.orm.em2_listeners.attach_entity_listeners'], end($foobarEventManagerArguments[1]));
     }
 
-    #[IgnoreDeprecations]
     public function testAttachLazyEntityListener(): void
     {
         if (! interface_exists(EntityManagerInterface::class)) {
@@ -1423,7 +1377,6 @@ abstract class AbstractDoctrineExtensionTestCase extends TestCase
         $this->assertDICDefinitionMethodCallOnce($resolver2, 'registerService', ['EntityListener2', 'entity_listener2']);
     }
 
-    #[IgnoreDeprecations]
     public function testAttachLazyEntityListenerForCustomResolver(): void
     {
         if (! interface_exists(EntityManagerInterface::class)) {
@@ -1447,7 +1400,6 @@ abstract class AbstractDoctrineExtensionTestCase extends TestCase
         $this->assertTrue($container->getDefinition('entity_listener')->isPublic());
     }
 
-    #[IgnoreDeprecations]
     public function testLazyEntityListenerResolverWithoutCorrectInterface(): void
     {
         if (! interface_exists(EntityManagerInterface::class)) {
@@ -1467,7 +1419,6 @@ abstract class AbstractDoctrineExtensionTestCase extends TestCase
         $this->compileContainer($container);
     }
 
-    #[IgnoreDeprecations]
     public function testPrivateLazyEntityListener(): void
     {
         if (! interface_exists(EntityManagerInterface::class)) {
@@ -1487,7 +1438,6 @@ abstract class AbstractDoctrineExtensionTestCase extends TestCase
         $this->assertTrue($container->getDefinition('doctrine.orm.em1_entity_listener_resolver')->isPublic());
     }
 
-    #[IgnoreDeprecations]
     public function testAbstractEntityListener(): void
     {
         if (! interface_exists(EntityManagerInterface::class)) {
@@ -1508,7 +1458,6 @@ abstract class AbstractDoctrineExtensionTestCase extends TestCase
         $this->compileContainer($container);
     }
 
-    #[IgnoreDeprecations]
     public function testRepositoryFactory(): void
     {
         if (! interface_exists(EntityManagerInterface::class)) {
@@ -1521,7 +1470,6 @@ abstract class AbstractDoctrineExtensionTestCase extends TestCase
         $this->assertDICDefinitionMethodCallOnce($definition, 'setRepositoryFactory', ['repository_factory']);
     }
 
-    #[IgnoreDeprecations]
     public function testDisableSchemaValidation(): void
     {
         $container           = $this->loadContainer(fixture: 'dbal_collect_schema_errors_enable', withMinimalOrmConfig: false);
@@ -1537,7 +1485,6 @@ abstract class AbstractDoctrineExtensionTestCase extends TestCase
         $this->assertFalse($collectorDefinition->getArguments()[1]);
     }
 
-    #[IgnoreDeprecations]
     public function testNativeLazyObjectsWithoutConfig(): void
     {
         if (! interface_exists(EntityManagerInterface::class)) {
@@ -1565,7 +1512,6 @@ abstract class AbstractDoctrineExtensionTestCase extends TestCase
         $this->assertFalse($entityManager->getConfiguration()->isNativeLazyObjectsEnabled());
     }
 
-    #[IgnoreDeprecations]
     public function testNativeLazyObjectsWithConfigTrue(): void
     {
         if (! interface_exists(EntityManagerInterface::class)) {
@@ -1586,7 +1532,6 @@ abstract class AbstractDoctrineExtensionTestCase extends TestCase
         $this->assertTrue($entityManager->getConfiguration()->isNativeLazyObjectsEnabled());
     }
 
-    #[IgnoreDeprecations]
     public function testNativeLazyObjectsWithConfigFalse(): void
     {
         if (! interface_exists(EntityManagerInterface::class)) {
