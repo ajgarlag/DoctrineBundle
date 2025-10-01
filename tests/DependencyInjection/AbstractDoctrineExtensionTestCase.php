@@ -81,6 +81,7 @@ abstract class AbstractDoctrineExtensionTestCase extends TestCase
         $loadPhp->import('minimal_orm.php');
     }
 
+    #[IgnoreDeprecations('Since symfony/dependency-injection 7.4: XML configuration format is deprecated, use YAML or PHP instead.')]
     public function testDbalLoadFromXmlMultipleConnections(): void
     {
         $container = $this->loadContainer(fixture: 'dbal_service_multiple_connections', withMinimalOrmConfig: false);
@@ -150,6 +151,7 @@ abstract class AbstractDoctrineExtensionTestCase extends TestCase
         $this->assertSame('utf8', $config['charset']);
     }
 
+    #[IgnoreDeprecations('Since symfony/dependency-injection 7.4: XML configuration format is deprecated, use YAML or PHP instead.')]
     public function testDbalLoadFromXmlSingleConnections(): void
     {
         $container = $this->loadContainer(fixture: 'dbal_service_single_connection', withMinimalOrmConfig: false);
@@ -203,6 +205,7 @@ abstract class AbstractDoctrineExtensionTestCase extends TestCase
         $this->assertFalse(isset($config['override_url']));
     }
 
+    #[IgnoreDeprecations('Since symfony/dependency-injection 7.4: XML configuration format is deprecated, use YAML or PHP instead.')]
     public function testDbalDbnameSuffix(): void
     {
         $container = $this->loadContainer(fixture: 'dbal_dbname_suffix', withMinimalOrmConfig: false);
@@ -212,6 +215,7 @@ abstract class AbstractDoctrineExtensionTestCase extends TestCase
         $this->assertSame('_test', $config['dbname_suffix']);
     }
 
+    #[IgnoreDeprecations('Since symfony/dependency-injection 7.4: XML configuration format is deprecated, use YAML or PHP instead.')]
     public function testDbalDriverScheme(): void
     {
         $container = $this->loadContainer(fixture: 'dbal_driver_schemes', withMinimalOrmConfig: false);
@@ -222,6 +226,7 @@ abstract class AbstractDoctrineExtensionTestCase extends TestCase
         $this->assertSame('pdo_mysql', $schemes['mysql']);
     }
 
+    #[IgnoreDeprecations('Since symfony/dependency-injection 7.4: XML configuration format is deprecated, use YAML or PHP instead.')]
     public function testDbalLoadSinglePrimaryReplicaConnection(): void
     {
         $container = $this->loadContainer(fixture: 'dbal_service_single_primary_replica_connection', withMinimalOrmConfig: false);
@@ -320,6 +325,7 @@ abstract class AbstractDoctrineExtensionTestCase extends TestCase
         );
     }
 
+    #[IgnoreDeprecations('Since symfony/dependency-injection 7.4: XML configuration format is deprecated, use YAML or PHP instead.')]
     public function testDbalResultCache(): void
     {
         $container = $this->loadContainer(fixture: 'dbal_result_cache', withMinimalOrmConfig: false);
@@ -340,6 +346,7 @@ abstract class AbstractDoctrineExtensionTestCase extends TestCase
         );
     }
 
+    #[IgnoreDeprecations('Since symfony/dependency-injection 7.4: XML configuration format is deprecated, use YAML or PHP instead.')]
     public function testLoadSimpleSingleConnection(): void
     {
         if (! interface_exists(EntityManagerInterface::class)) {
@@ -376,6 +383,7 @@ abstract class AbstractDoctrineExtensionTestCase extends TestCase
     /**
      * The PDO driver doesn't require a database name to be to set when connecting to a database server
      */
+    #[IgnoreDeprecations('Since symfony/dependency-injection 7.4: XML configuration format is deprecated, use YAML or PHP instead.')]
     public function testLoadSimpleSingleConnectionWithoutDbName(): void
     {
         if (! interface_exists(EntityManagerInterface::class)) {
@@ -408,6 +416,7 @@ abstract class AbstractDoctrineExtensionTestCase extends TestCase
         ]);
     }
 
+    #[IgnoreDeprecations('Since symfony/dependency-injection 7.4: XML configuration format is deprecated, use YAML or PHP instead.')]
     public function testLoadSingleConnection(): void
     {
         if (! interface_exists(EntityManagerInterface::class)) {
@@ -444,6 +453,7 @@ abstract class AbstractDoctrineExtensionTestCase extends TestCase
         $this->assertDICDefinitionMethodCallOnce($configDef, 'setDefaultRepositoryClassName', ['Acme\Doctrine\Repository']);
     }
 
+    #[IgnoreDeprecations('Since symfony/dependency-injection 7.4: XML configuration format is deprecated, use YAML or PHP instead.')]
     public function testLoadMultipleConnections(): void
     {
         if (! interface_exists(EntityManagerInterface::class)) {
@@ -504,6 +514,7 @@ abstract class AbstractDoctrineExtensionTestCase extends TestCase
         $this->assertSame(ArrayAdapter::class, $definition->getClass());
     }
 
+    #[IgnoreDeprecations('Since symfony/dependency-injection 7.4: XML configuration format is deprecated, use YAML or PHP instead.')]
     public function testEntityManagerMetadataCacheDriverConfiguration(): void
     {
         if (! interface_exists(EntityManagerInterface::class)) {
@@ -519,6 +530,7 @@ abstract class AbstractDoctrineExtensionTestCase extends TestCase
         $this->assertDICDefinitionClass($definition, PhpArrayAdapter::class);
     }
 
+    #[IgnoreDeprecations('Since symfony/dependency-injection 7.4: XML configuration format is deprecated, use YAML or PHP instead.')]
     public function testSingleEntityManagerMultipleMappingBundleDefinitions(): void
     {
         if (! interface_exists(EntityManagerInterface::class)) {
@@ -603,6 +615,7 @@ abstract class AbstractDoctrineExtensionTestCase extends TestCase
         ]);
     }
 
+    #[IgnoreDeprecations('Since symfony/dependency-injection 7.4: XML configuration format is deprecated, use YAML or PHP instead.')]
     public function testSingleEntityManagerDefaultTableOptions(): void
     {
         if (! interface_exists(EntityManagerInterface::class)) {
@@ -626,6 +639,7 @@ abstract class AbstractDoctrineExtensionTestCase extends TestCase
         $this->assertEquals('InnoDB', $defaults['engine']);
     }
 
+    #[IgnoreDeprecations('Since symfony/dependency-injection 7.4: XML configuration format is deprecated, use YAML or PHP instead.')]
     public function testSetTypes(): void
     {
         $container = $this->loadContainer(fixture: 'dbal_types', withMinimalOrmConfig: false);
@@ -637,6 +651,7 @@ abstract class AbstractDoctrineExtensionTestCase extends TestCase
         $this->assertEquals('%doctrine.dbal.connection_factory.types%', $container->getDefinition('doctrine.dbal.connection_factory')->getArgument(0));
     }
 
+    #[IgnoreDeprecations('Since symfony/dependency-injection 7.4: XML configuration format is deprecated, use YAML or PHP instead.')]
     public function testSetCustomFunctions(): void
     {
         if (! interface_exists(EntityManagerInterface::class)) {
@@ -651,6 +666,7 @@ abstract class AbstractDoctrineExtensionTestCase extends TestCase
         $this->assertDICDefinitionMethodCallOnce($definition, 'addCustomDatetimeFunction', ['test_datetime', TestDatetimeFunction::class]);
     }
 
+    #[IgnoreDeprecations('Since symfony/dependency-injection 7.4: XML configuration format is deprecated, use YAML or PHP instead.')]
     public function testSetNamingStrategy(): void
     {
         if (! interface_exists(EntityManagerInterface::class)) {
@@ -666,6 +682,7 @@ abstract class AbstractDoctrineExtensionTestCase extends TestCase
         $this->assertDICDefinitionMethodCallOnce($def2, 'setNamingStrategy', [0 => new Reference('doctrine.orm.naming_strategy.underscore')]);
     }
 
+    #[IgnoreDeprecations('Since symfony/dependency-injection 7.4: XML configuration format is deprecated, use YAML or PHP instead.')]
     public function testSetIdentityGenerationPreferences(): void
     {
         if (! interface_exists(EntityManagerInterface::class)) {
@@ -681,6 +698,7 @@ abstract class AbstractDoctrineExtensionTestCase extends TestCase
         $this->assertDICDefinitionMethodCallOnce($def2, 'setIdentityGenerationPreferences', [0 => [PostgreSQLPlatform::class => ClassMetadata::GENERATOR_TYPE_SEQUENCE]]);
     }
 
+    #[IgnoreDeprecations('Since symfony/dependency-injection 7.4: XML configuration format is deprecated, use YAML or PHP instead.')]
     public function testSetQuoteStrategy(): void
     {
         if (! interface_exists(EntityManagerInterface::class)) {
@@ -696,6 +714,7 @@ abstract class AbstractDoctrineExtensionTestCase extends TestCase
         $this->assertDICDefinitionMethodCallOnce($def2, 'setQuoteStrategy', [0 => new Reference('doctrine.orm.quote_strategy.ansi')]);
     }
 
+    #[IgnoreDeprecations('Since symfony/dependency-injection 7.4: XML configuration format is deprecated, use YAML or PHP instead.')]
     public function testSetTypedFieldMapper(): void
     {
         if (! interface_exists(EntityManagerInterface::class)) {
@@ -823,6 +842,7 @@ abstract class AbstractDoctrineExtensionTestCase extends TestCase
         ];
     }
 
+    #[IgnoreDeprecations('Since symfony/dependency-injection 7.4: XML configuration format is deprecated, use YAML or PHP instead.')]
     public function testSecondLevelCache(): void
     {
         if (! interface_exists(EntityManagerInterface::class)) {
@@ -893,6 +913,7 @@ abstract class AbstractDoctrineExtensionTestCase extends TestCase
         $this->assertEquals('doctrine.orm.default_second_level_cache.region_cache_driver', $slcFactoryArgs[1]);
     }
 
+    #[IgnoreDeprecations('Since symfony/dependency-injection 7.4: XML configuration format is deprecated, use YAML or PHP instead.')]
     public function testSingleEMSetCustomFunctions(): void
     {
         if (! interface_exists(EntityManagerInterface::class)) {
@@ -905,6 +926,7 @@ abstract class AbstractDoctrineExtensionTestCase extends TestCase
         $this->assertDICDefinitionMethodCallOnce($definition, 'addCustomStringFunction', ['test_string', TestStringFunction::class]);
     }
 
+    #[IgnoreDeprecations('Since symfony/dependency-injection 7.4: XML configuration format is deprecated, use YAML or PHP instead.')]
     public function testAddCustomHydrationMode(): void
     {
         if (! interface_exists(EntityManagerInterface::class)) {
@@ -918,6 +940,7 @@ abstract class AbstractDoctrineExtensionTestCase extends TestCase
         $this->assertDICDefinitionMethodCallOnce($definition, 'addCustomHydrationMode', ['test_hydrator', TestHydrator::class]);
     }
 
+    #[IgnoreDeprecations('Since symfony/dependency-injection 7.4: XML configuration format is deprecated, use YAML or PHP instead.')]
     public function testAddFilter(): void
     {
         if (! interface_exists(EntityManagerInterface::class)) {
@@ -941,6 +964,7 @@ abstract class AbstractDoctrineExtensionTestCase extends TestCase
         $this->assertCount(2, $entityManager->getFilters()->getEnabledFilters());
     }
 
+    #[IgnoreDeprecations('Since symfony/dependency-injection 7.4: XML configuration format is deprecated, use YAML or PHP instead.')]
     public function testDisablingLazyGhostOnOrm3Throws(): void
     {
         if (! interface_exists(EntityManagerInterface::class)) {
@@ -973,6 +997,7 @@ abstract class AbstractDoctrineExtensionTestCase extends TestCase
     }
 
     /** @group legacy */
+    #[IgnoreDeprecations('Since symfony/dependency-injection 7.4: XML configuration format is deprecated, use YAML or PHP instead.')]
     public function testEnablingReportFieldsWhereDeclaredOnOrm3IsDeprecated(): void
     {
         if (! interface_exists(EntityManagerInterface::class)) {
@@ -1043,6 +1068,7 @@ abstract class AbstractDoctrineExtensionTestCase extends TestCase
         $this->loadContainer(fixture: 'dbal_use_savepoints', withMinimalOrmConfig: false);
     }
 
+    #[IgnoreDeprecations('Since symfony/dependency-injection 7.4: XML configuration format is deprecated, use YAML or PHP instead.')]
     public function testResolveTargetEntity(): void
     {
         if (! interface_exists(EntityManagerInterface::class)) {
@@ -1059,6 +1085,7 @@ abstract class AbstractDoctrineExtensionTestCase extends TestCase
         $this->assertEquals(['doctrine.event_listener' => [['event' => 'loadClassMetadata'], ['event' => 'onClassMetadataNotFound']]], $tags);
     }
 
+    #[IgnoreDeprecations('Since symfony/dependency-injection 7.4: XML configuration format is deprecated, use YAML or PHP instead.')]
     public function testSchemaIgnoreClasses(): void
     {
         if (! interface_exists(EntityManagerInterface::class)) {
@@ -1072,6 +1099,7 @@ abstract class AbstractDoctrineExtensionTestCase extends TestCase
         $this->assertDICDefinitionMethodCallOnce($def1, 'setSchemaIgnoreClasses', [0 => ['Class\A', 'Class\B']]);
     }
 
+    #[IgnoreDeprecations('Since symfony/dependency-injection 7.4: XML configuration format is deprecated, use YAML or PHP instead.')]
     public function testFetchModeSubselectBatchSize(): void
     {
         if (! interface_exists(EntityManagerInterface::class)) {
@@ -1085,6 +1113,7 @@ abstract class AbstractDoctrineExtensionTestCase extends TestCase
         $this->assertDICDefinitionMethodCallOnce($def1, 'setEagerFetchBatchSize', [10000]);
     }
 
+    #[IgnoreDeprecations('Since symfony/dependency-injection 7.4: XML configuration format is deprecated, use YAML or PHP instead.')]
     public function testAttachEntityListeners(): void
     {
         if (! interface_exists(EntityManagerInterface::class)) {
@@ -1162,6 +1191,7 @@ abstract class AbstractDoctrineExtensionTestCase extends TestCase
         ]);
     }
 
+    #[IgnoreDeprecations('Since symfony/dependency-injection 7.4: XML configuration format is deprecated, use YAML or PHP instead.')]
     public function testDbalAutoCommit(): void
     {
         $container = $this->loadContainer(fixture: 'dbal_auto_commit', withMinimalOrmConfig: false);
@@ -1170,6 +1200,7 @@ abstract class AbstractDoctrineExtensionTestCase extends TestCase
         $this->assertDICDefinitionMethodCallOnce($definition, 'setAutoCommit', [false]);
     }
 
+    #[IgnoreDeprecations('Since symfony/dependency-injection 7.4: XML configuration format is deprecated, use YAML or PHP instead.')]
     public function testDbalOracleConnectstring(): void
     {
         $container = $this->loadContainer(fixture: 'dbal_oracle_connectstring', withMinimalOrmConfig: false);
@@ -1178,6 +1209,7 @@ abstract class AbstractDoctrineExtensionTestCase extends TestCase
         $this->assertSame('scott@sales-server:1521/sales.us.example.com', $config['connectstring']);
     }
 
+    #[IgnoreDeprecations('Since symfony/dependency-injection 7.4: XML configuration format is deprecated, use YAML or PHP instead.')]
     public function testDbalOracleInstancename(): void
     {
         $container = $this->loadContainer(fixture: 'dbal_oracle_instancename', withMinimalOrmConfig: false);
@@ -1186,6 +1218,7 @@ abstract class AbstractDoctrineExtensionTestCase extends TestCase
         $this->assertSame('mySuperInstance', $config['instancename']);
     }
 
+    #[IgnoreDeprecations('Since symfony/dependency-injection 7.4: XML configuration format is deprecated, use YAML or PHP instead.')]
     public function testDbalSchemaFilterNewConfig(): void
     {
         $container = $this->getContainer([]);
@@ -1268,6 +1301,7 @@ abstract class AbstractDoctrineExtensionTestCase extends TestCase
         $this->assertTrue($filter->__invoke('app_session'));
     }
 
+    #[IgnoreDeprecations('Since symfony/dependency-injection 7.4: XML configuration format is deprecated, use YAML or PHP instead.')]
     public function testEntityListenerResolver(): void
     {
         if (! interface_exists(EntityManagerInterface::class)) {
@@ -1289,6 +1323,7 @@ abstract class AbstractDoctrineExtensionTestCase extends TestCase
         $this->assertDICDefinitionMethodCallOnce($listener, 'register', ['entity_listener2']);
     }
 
+    #[IgnoreDeprecations('Since symfony/dependency-injection 7.4: XML configuration format is deprecated, use YAML or PHP instead.')]
     public function testAttachEntityListenerTag(): void
     {
         if (! interface_exists(EntityManagerInterface::class)) {
@@ -1326,6 +1361,7 @@ abstract class AbstractDoctrineExtensionTestCase extends TestCase
         $this->assertDICDefinitionMethodCallOnce($attachListener, 'addEntityListener', ['My/Entity2', 'EntityListener2', 'preFlush', 'preFlushHandler']);
     }
 
+    #[IgnoreDeprecations('Since symfony/dependency-injection 7.4: XML configuration format is deprecated, use YAML or PHP instead.')]
     public function testAttachEntityListenersTwoConnections(): void
     {
         if (! interface_exists(EntityManagerInterface::class)) {
@@ -1354,6 +1390,7 @@ abstract class AbstractDoctrineExtensionTestCase extends TestCase
         $this->assertSame([['loadClassMetadata'], 'doctrine.orm.em2_listeners.attach_entity_listeners'], end($foobarEventManagerArguments[1]));
     }
 
+    #[IgnoreDeprecations('Since symfony/dependency-injection 7.4: XML configuration format is deprecated, use YAML or PHP instead.')]
     public function testAttachLazyEntityListener(): void
     {
         if (! interface_exists(EntityManagerInterface::class)) {
@@ -1386,6 +1423,7 @@ abstract class AbstractDoctrineExtensionTestCase extends TestCase
         $this->assertDICDefinitionMethodCallOnce($resolver2, 'registerService', ['EntityListener2', 'entity_listener2']);
     }
 
+    #[IgnoreDeprecations('Since symfony/dependency-injection 7.4: XML configuration format is deprecated, use YAML or PHP instead.')]
     public function testAttachLazyEntityListenerForCustomResolver(): void
     {
         if (! interface_exists(EntityManagerInterface::class)) {
@@ -1409,6 +1447,7 @@ abstract class AbstractDoctrineExtensionTestCase extends TestCase
         $this->assertTrue($container->getDefinition('entity_listener')->isPublic());
     }
 
+    #[IgnoreDeprecations('Since symfony/dependency-injection 7.4: XML configuration format is deprecated, use YAML or PHP instead.')]
     public function testLazyEntityListenerResolverWithoutCorrectInterface(): void
     {
         if (! interface_exists(EntityManagerInterface::class)) {
@@ -1428,6 +1467,7 @@ abstract class AbstractDoctrineExtensionTestCase extends TestCase
         $this->compileContainer($container);
     }
 
+    #[IgnoreDeprecations('Since symfony/dependency-injection 7.4: XML configuration format is deprecated, use YAML or PHP instead.')]
     public function testPrivateLazyEntityListener(): void
     {
         if (! interface_exists(EntityManagerInterface::class)) {
@@ -1447,6 +1487,7 @@ abstract class AbstractDoctrineExtensionTestCase extends TestCase
         $this->assertTrue($container->getDefinition('doctrine.orm.em1_entity_listener_resolver')->isPublic());
     }
 
+    #[IgnoreDeprecations('Since symfony/dependency-injection 7.4: XML configuration format is deprecated, use YAML or PHP instead.')]
     public function testAbstractEntityListener(): void
     {
         if (! interface_exists(EntityManagerInterface::class)) {
@@ -1467,6 +1508,7 @@ abstract class AbstractDoctrineExtensionTestCase extends TestCase
         $this->compileContainer($container);
     }
 
+    #[IgnoreDeprecations('Since symfony/dependency-injection 7.4: XML configuration format is deprecated, use YAML or PHP instead.')]
     public function testRepositoryFactory(): void
     {
         if (! interface_exists(EntityManagerInterface::class)) {
@@ -1479,6 +1521,7 @@ abstract class AbstractDoctrineExtensionTestCase extends TestCase
         $this->assertDICDefinitionMethodCallOnce($definition, 'setRepositoryFactory', ['repository_factory']);
     }
 
+    #[IgnoreDeprecations('Since symfony/dependency-injection 7.4: XML configuration format is deprecated, use YAML or PHP instead.')]
     public function testDisableSchemaValidation(): void
     {
         $container           = $this->loadContainer(fixture: 'dbal_collect_schema_errors_enable', withMinimalOrmConfig: false);
@@ -1522,6 +1565,7 @@ abstract class AbstractDoctrineExtensionTestCase extends TestCase
         $this->assertFalse($entityManager->getConfiguration()->isNativeLazyObjectsEnabled());
     }
 
+    #[IgnoreDeprecations('Since symfony/dependency-injection 7.4: XML configuration format is deprecated, use YAML or PHP instead.')]
     public function testNativeLazyObjectsWithConfigTrue(): void
     {
         if (! interface_exists(EntityManagerInterface::class)) {
