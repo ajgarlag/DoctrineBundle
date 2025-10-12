@@ -4,11 +4,9 @@ declare(strict_types=1);
 
 namespace Doctrine\Bundle\DoctrineBundle\Tests\DependencyInjection\Compiler;
 
-use Doctrine\Bundle\DoctrineBundle\DependencyInjection\Compiler\CacheCompatibilityPass;
 use Doctrine\Bundle\DoctrineBundle\DependencyInjection\Compiler\IdGeneratorPass;
 use Doctrine\Bundle\DoctrineBundle\DependencyInjection\DoctrineExtension;
 use Doctrine\Bundle\DoctrineBundle\Tests\DependencyInjection\Fixtures\CustomIdGenerator;
-use Doctrine\Bundle\DoctrineBundle\Tests\DeprecationFreeConfig;
 use Doctrine\ORM\EntityManagerInterface;
 use Fixtures\Bundles\AttributesBundle\AttributesBundle;
 use Fixtures\Bundles\AttributesBundle\Entity\TestCustomIdGeneratorEntity as AttributeCustomIdGeneratorEntity;
@@ -72,7 +70,6 @@ class IdGeneratorPassTest extends TestCase
         $extension->load([
             'framework' => [
                 'http_method_override' => false,
-                'annotations' => ['enabled' => false],
                 'php_errors' => ['log' => true],
                 'handle_all_throwables' => true,
             ],
@@ -81,7 +78,6 @@ class IdGeneratorPassTest extends TestCase
         $extension = new DoctrineExtension();
         $container->registerExtension($extension);
         $extension->load([
-            DeprecationFreeConfig::get(),
             [
                 'dbal' => [
                     'driver' => 'pdo_sqlite',
@@ -96,7 +92,6 @@ class IdGeneratorPassTest extends TestCase
 
         $def->setAutoconfigured(true);
 
-        $container->addCompilerPass(new CacheCompatibilityPass());
         $container->addCompilerPass(new IdGeneratorPass());
         $container->compile();
 

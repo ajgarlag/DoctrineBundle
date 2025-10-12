@@ -64,8 +64,10 @@ class CacheSchemaSubscriberTest extends TestCase
         $extension = new DoctrineExtension();
         $container->registerExtension($extension);
         $extension->load([
-            DeprecationFreeConfig::get(),
-            ['dbal' => []],
+            [
+                'dbal' => [],
+                'orm' => [],
+            ],
         ], $container);
 
         $container->setAlias('test_subscriber_alias', new Alias('doctrine.orm.listeners.doctrine_dbal_cache_adapter_schema_listener', true));

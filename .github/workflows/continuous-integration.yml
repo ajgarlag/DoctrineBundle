@@ -37,9 +37,7 @@ jobs:
       fail-fast: false
       matrix:
         php-version:
-          - "8.1"
-          - "8.2"
-          - "8.3"
+          - "8.4"
         dependencies:
           - "highest"
         stability:
@@ -54,7 +52,7 @@ jobs:
           # Tests the lowest set of dependencies
           - dependencies: "lowest"
             stability: "stable"
-            php-version: "8.1"
+            php-version: "8.4"
 
           # Test LTS
           - symfony-require: "6.4.*"
@@ -89,7 +87,7 @@ jobs:
         with:
           php-version: "${{ matrix.php-version }}"
           coverage: "pcov"
-          ini-values: "zend.assertions=1"
+          ini-file: "development"
           extensions: "pdo_sqlite"
           tools: "flex"
 

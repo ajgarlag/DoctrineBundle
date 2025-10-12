@@ -62,7 +62,7 @@ class LockStoreSchemaListenerTest extends TestCase
 
         $extension = new DoctrineExtension();
         $container->registerExtension($extension);
-        $extension->load([DeprecationFreeConfig::get(), ['dbal' => []]], $container);
+        $extension->load([['dbal' => [], 'orm' => []]], $container);
 
         $container->setAlias(
             'test_subscriber_lock_alias',

@@ -5,11 +5,9 @@ declare(strict_types=1);
 namespace Doctrine\Bundle\DoctrineBundle\Tests\Twig;
 
 use Doctrine\Bundle\DoctrineBundle\Twig\DoctrineExtension;
-use PHPUnit\Framework\Attributes\IgnoreDeprecations;
 use PHPUnit\Framework\TestCase;
 
 use function pack;
-use function substr_count;
 
 class DoctrineExtensionTest extends TestCase
 {
@@ -23,13 +21,13 @@ class DoctrineExtensionTest extends TestCase
         $this->assertEquals('a=1 OR (1)::string OR b=2', $result);
     }
 
-    public function testReplaceQueryParametersWithStartingIndexAtOne(): void
+    public function testReplaceQueryParametersWithNonSequentialNumericKeys(): void
     {
         $extension  = new DoctrineExtension();
         $query      = 'a=? OR b=?';
         $parameters = [
-            1 => 1,
-            2 => 2,
+            2 => 1,
+            5 => 2,
         ];
 
         $result = $extension->replaceQueryParameters($query, $parameters);
@@ -74,6 +72,16 @@ class DoctrineExtensionTest extends TestCase
         $this->assertEquals('IN (NULL)', $result);
     }
 
+    public function testReplaceQueryParametersWithEscapedParameterPlaceholder(): void
+    {
+        $extension  = new DoctrineExtension();
+        $query      = 'column->>field ?? ?';
+        $parameters = ['foo'];
+
+        $result = $extension->replaceQueryParameters($query, $parameters);
+        $this->assertEquals("column->>field ?? 'foo'", $result);
+    }
+
     public function testEscapeBinaryParameter(): void
     {
         $binaryString = pack('H*', '9d40b8c1417f42d099af4782ec4b20b6');
@@ -104,57 +112,6 @@ class DoctrineExtensionTest extends TestCase
     public function testEscapeBooleanParameter(): void
     {
         $this->assertEquals('1', DoctrineExtension::escapeFunction(true));
-    }
-
-    #[IgnoreDeprecations]
-    public function testItHighlightsSqlQueriesUsingCssClasses(): void
-    {
-        $extension = new DoctrineExtension();
-        self::assertStringContainsString(
-            'class=',
-            $extension->formatQuery('CREATE DATABASE 📚;'),
-        );
-        self::assertStringContainsString(
-            'class=',
-            $extension->formatSql('CREATE DATABASE 📚;', true),
-        );
-    }
-
-    #[IgnoreDeprecations]
-    public function testItDoesNotOutputDuplicatePreTags(): void
-    {
-        $extension = new DoctrineExtension();
-        self::assertSame(
-            1,
-            substr_count($extension->formatQuery('CREATE DATABASE 📚;'), '<pre'),
-        );
-        self::assertSame(
-            1,
-            substr_count($extension->formatSQL('CREATE DATABASE 📚;', true), '<pre'),
-        );
-    }
-
-    #[IgnoreDeprecations]
-    public function testItUsesCssOnTheDivTag(): void
-    {
-        $extension = new DoctrineExtension();
-        self::assertSame(
-            1,
-            substr_count($extension->formatQuery('CREATE DATABASE 📚;'), '<div class='),
-        );
-        self::assertSame(
-            1,
-            substr_count($extension->formatQuery('CREATE DATABASE 📚;'), '<pre>'),
-        );
-    }
-
-    public function testItUsesCssOnThePreTag(): void
-    {
-        $extension = new DoctrineExtension();
-        self::assertSame(
-            1,
-            substr_count($extension->formatSQL('CREATE DATABASE 📚;', true), '<pre class='),
-        );
     }
 }
 

@@ -9,17 +9,9 @@ use Doctrine\DBAL\Configuration;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Driver;
 use Doctrine\DBAL\Schema\DefaultSchemaManagerFactory;
-use Doctrine\Deprecations\PHPUnit\VerifyDeprecations;
-use InvalidArgumentException;
-use PHPUnit\Framework\Attributes\IgnoreDeprecations;
-
-use function array_intersect_key;
-use function method_exists;
 
 class ConnectionFactoryTest extends TestCase
 {
-    use VerifyDeprecations;
-
     private Configuration $configuration;
 
     protected function setUp(): void
@@ -66,54 +58,7 @@ class ConnectionFactoryTest extends TestCase
         );
     }
 
-    #[IgnoreDeprecations]
-    public function testCollateMapsToCollationForMySql(): void
-    {
-        $factory = new ConnectionFactory([]);
-        $this->expectDeprecationWithIdentifier(
-            'https://github.com/doctrine/dbal/issues/5214',
-        );
-        $connection = $factory->createConnection(
-            [
-                'driver' => 'pdo_mysql',
-                'defaultTableOptions' => ['collate' => 'my_collation'],
-                'serverVersion' => '9.4.0',
-            ],
-            $this->configuration,
-        );
-
-        $tableOptions = $connection->getParams()['defaultTableOptions'];
-        $this->assertArrayNotHasKey('collate', $tableOptions);
-        $this->assertSame(
-            'my_collation',
-            $tableOptions['collation'],
-        );
-    }
-
-    #[IgnoreDeprecations]
-    public function testConnectionOverrideOptions(): void
-    {
-        $params = [
-            'dbname' => 'main_test',
-            'host' => 'db_test',
-            'port' => 5432,
-            'user' => 'tester',
-            'password' => 'wordpass',
-        ];
-
-        /** @psalm-suppress InvalidArgument We should adjust when https://github.com/vimeo/psalm/issues/8984 is fixed */
-        $connection = (new ConnectionFactory([]))->createConnection(
-            [
-                'url' => 'mysql://root:password@database:3306/main?serverVersion=mariadb-12.1.1',
-                'connection_override_options' => $params,
-            ],
-            $this->configuration,
-        );
-
-        $this->assertEquals($params, array_intersect_key($connection->getParams(), $params));
-    }
-
-    public function testConnectionCharsetFromUrl()
+    public function testConnectionCharsetFromUrl(): void
     {
         /** @psalm-suppress InvalidArgument Need to be compatible with DBAL < 4, which still has `$params['url']` */
         $connection = (new ConnectionFactory([]))->createConnection(
@@ -166,34 +111,6 @@ class ConnectionFactoryTest extends TestCase
 
         $this->assertSame('primary_test', $parsedParams['primary']['dbname']);
         $this->assertSame('replica_test', $parsedParams['replica']['replica1']['dbname']);
-    }
-
-    public function testItThrowsWhenPassingMappingTypesTwice(): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-
-        (new ConnectionFactory())->createConnection(['driver' => 'pdo_sqlite'], null, [], []);
-    }
-
-    #[IgnoreDeprecations]
-    public function testPassingMappingTypesAsFourthArgumentIsDeprecatedWithDbal4(): void
-    {
-        if (method_exists(Connection::class, 'getEventManager')) {
-            $this->markTestSkipped('DBAL 3 does not trigger the deprecation.');
-        }
-
-        $this->expectDeprecationWithIdentifier('https://github.com/doctrine/DoctrineBundle/pull/1976');
-        (new ConnectionFactory())->createConnection(['driver' => 'pdo_sqlite'], null, null, []);
-    }
-
-    public function testPassingMappingTypesAsFourthArgumentIsFineWithDbal3(): void
-    {
-        if (! method_exists(Connection::class, 'getEventManager')) {
-            $this->markTestSkipped('DBAL 4 triggers the deprecation.');
-        }
-
-        $this->expectNoDeprecationWithIdentifier('https://github.com/doctrine/DoctrineBundle/pull/1976');
-        (new ConnectionFactory())->createConnection(['driver' => 'pdo_sqlite'], null, null, []);
     }
 }
 

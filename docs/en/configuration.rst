@@ -89,9 +89,6 @@ Configuration Reference
                         # pdo_sqlsrv driver specific. Configuring MultipleActiveResultSets for the pdo_sqlsrv driver
                         MultipleActiveResultSets:  ~
 
-                        # Enable savepoints for nested transactions
-                        use_savepoints: true
-
                         driver:               pdo_mysql
                         platform_service:     ~
                         auto_commit:          ~
@@ -109,10 +106,6 @@ Configuration Reference
                         profiling_collect_backtrace: false
                         # When true, profiling also collects schema errors for each query
                         profiling_collect_schema_errors: true
-
-                        # When true, type comments are skipped in the database schema, matching the behavior of DBAL 4.
-                        # This requires using the non-deprecated schema comparison APIs of DBAL.
-                        disable_type_comments: false
 
                         server_version:       ~
                         driver_class:         ~
@@ -135,8 +128,7 @@ Configuration Reference
                             # Affects schema-tool. If absent, DBAL chooses defaults
                             # based on the platform. Examples here are for MySQL.
                             # charset:      utf8mb4
-                            # collate:      utf8mb4_unicode_ci # When using doctrine/dbal 2.x
-                            # collation:    utf8mb4_unicode_ci # When using doctrine/dbal 3.x
+                            # collation:    utf8mb4_unicode_ci
                             # engine:       InnoDB
 
                         # Service identifier of a Psr\Cache\CacheItemPoolInterface implementation
@@ -214,14 +206,9 @@ Configuration Reference
             orm:
                 default_entity_manager: ~ # The first defined is used if not set
 
-                # Auto generate mode possible values are: "NEVER", "ALWAYS", "FILE_NOT_EXISTS", "EVAL", "FILE_NOT_EXISTS_OR_CHANGED"
-                auto_generate_proxy_classes:  false
-                proxy_dir:                    "%kernel.cache_dir%/doctrine/orm/Proxies"
-                proxy_namespace:              Proxies
-                # Enables the new implementation of proxies based on lazy ghosts instead of using the legacy implementation
-                enable_lazy_ghost_objects:    false
-                # Enables the new native implementation of PHP lazy objects instead of generated proxies
-                enable_native_lazy_objects:   false
+                # No-op, will be deprecated and removed in the future
+                enable_native_lazy_objects:   true
+
                 identity_generation_preferences:
                     Doctrine\DBAL\Platforms\PostgreSQLPlatform: identity
 
@@ -259,8 +246,6 @@ Configuration Reference
                         class_metadata_factory_name:  Doctrine\ORM\Mapping\ClassMetadataFactory
                         default_repository_class:     Doctrine\ORM\EntityRepository
                         auto_mapping:                 false
-                        # Opt-in to new mapping driver mode as of Doctrine ORM 2.16, https://github.com/doctrine/orm/pull/10455
-                        report_fields_where_declared: false
                         # 0pt-in to the new mapping driver mode as of Doctrine ORM 2.14. See https://github.com/doctrine/orm/pull/6728.
                         validate_xml_mapping: false
                         naming_strategy:              doctrine.orm.naming_strategy.default
@@ -397,7 +382,6 @@ Configuration Reference
                     <!-- sslcrl: The name of a file containing the SSL certificate revocation list (CRL) -->
                     <!-- pooled: True to use a pooled server with the oci8/pdo_oracle driver -->
                     <!-- MultipleActiveResultSets: Configuring MultipleActiveResultSets for the pdo_sqlsrv driver -->
-                    <!-- use-savepoints: Enable savepoints for nested transactions -->
                     <doctrine:connection
                         name="default"
                         dbname=""
@@ -423,16 +407,13 @@ Configuration Reference
                         sslcrl=""
                         pooled=""
                         MultipleActiveResultSets=""
-                        use-savepoints="true"
                         driver="pdo_mysql"
-                        platform-service=""
                         auto-commit=""
                         schema-filter=""
                         logging="%kernel.debug%"
                         profiling="%kernel.debug%"
                         profiling-collect-backtrace="false"
                         profiling-collect-schema-errors="true"
-                        disable-type-comments="false"
                         server-version=""
                         driver-class=""
                         wrapper-class=""
@@ -447,9 +428,6 @@ Configuration Reference
 
                         <!-- example -->
                         <doctrine:default-table-option name="charset">utf8mb4</doctrine:default-table-option>
-                        <!-- when using doctrine/dbal 2.x -->
-                        <doctrine:default-table-option name="collate">utf8mb4_unicode_ci</doctrine:default-table-option>
-                        <!-- when using doctrine/dbal 3.x -->
                         <doctrine:default-table-option name="collation">utf8_unicode_ci</doctrine:default-table-option>
                         <doctrine:default-table-option name="engine">InnoDB</doctrine:default-table-option>
 
@@ -502,13 +480,7 @@ Configuration Reference
 
                 </doctrine:dbal>
 
-                <!-- auto-generate-proxy-classes: Auto generate mode possible values are: "NEVER", "ALWAYS", "FILE_NOT_EXISTS", "EVAL, "FILE_NOT_EXISTS_OR_CHANGED" -->
-                <doctrine:orm
-                    default-entity-manager="default"
-                    auto-generate-proxy-classes="false"
-                    proxy-dir="%kernel.cache_dir%/doctrine/orm/Proxies"
-                    proxy-namespace="Proxies"
-                >
+                <doctrine:orm default-entity-manager="default">
 
                     <!-- example -->
                     <doctrine:entity-manager
@@ -517,7 +489,6 @@ Configuration Reference
                         class-metadata-factory-name="Doctrine\ORM\Mapping\ClassMetadataFactory"
                         default-repository-class="Doctrine\ORM\EntityRepository"
                         auto-mapping="false"
-                        report-fields-where-declared="false"
                         naming-strategy="doctrine.orm.naming_strategy.default"
                         quote-strategy="doctrine.orm.quote_strategy.default"
                         typed-field-mapper="doctrine.orm.typed_field_mapper.default"
@@ -668,14 +639,10 @@ the ORM resolves to:
         orm:
             auto_mapping: true
             # the standard distribution overrides this to be true in debug, false otherwise
-            auto_generate_proxy_classes: false
-            proxy_namespace: Proxies
-            proxy_dir: "%kernel.cache_dir%/doctrine/orm/Proxies"
             default_entity_manager: default
             metadata_cache_driver: ~
             query_cache_driver: ~
             result_cache_driver: ~
-            report_fields_where_declared: false
 
 There are lots of other configuration options that you can use to overwrite
 certain classes, but those are for very advanced use-cases only.
@@ -685,24 +652,17 @@ Oracle DB
 
 If the environment format configured in oracle does not meet doctrine requirements,
 you need to use a middleware so that doctrine is aware of the format
-used by Oracle DB. With ``doctrine/dbal`` 3, the same could be done with
-an event listener.
+used by Oracle DB.
 
 You can do so easily with
 
 .. code-block:: yaml
 
     services:
-        # DBAL 4
         oracle.middleware:
             class: Doctrine\DBAL\Driver\OCI8\Middleware\InitializeSession
             tags:
                 - { name: doctrine.middleware, connection: default }
-        # DBAL 3
-        oracle.listener:
-            class: Doctrine\DBAL\Event\Listeners\OracleSessionInit
-            tags:
-                - { name: doctrine.event_listener, event: postConnect }
 
 The environment variables that doctrine is going to change in the Oracle DB session are:
 
@@ -753,7 +713,7 @@ configuration for the ORM and there are several configuration options that you
 can control. The following configuration options exist for a mapping:
 
 ``type``
-    One of ``attribute``, ``xml``, ``yml``, ``php`` or ``staticphp``.
+    One of ``attribute``, ``xml``, ``php`` or ``staticphp``.
     This specifies which type of metadata type your mapping uses.
 
 ``dir``
@@ -843,15 +803,6 @@ Doctrine DBAL Configuration
     accept, converted to the XML or YAML naming standards that Symfony
     enforces. See the Doctrine `DBAL documentation`_ for more information.
 
-.. note::
-
-    When specifying a ``url`` parameter, any information extracted from that
-    URL will override explicitly set parameters unless ``override_url`` is set
-    to ``true``. An example database URL would be
-    ``mysql://snoopy:redbaron@localhost/baseball``, and any explicitly set driver,
-    user, password and dbname parameter would be overridden by this URL.
-    See the Doctrine `DBAL documentation`_ for more information.
-
 Besides default Doctrine options, there are some Symfony-related ones that you
 can configure. The following block shows all possible configuration keys:
 
@@ -861,7 +812,7 @@ can configure. The following block shows all possible configuration keys:
 
         doctrine:
             dbal:
-                url:                      mysql://user:secret@localhost:1234/otherdatabase # this would override the values below
+                url:                      mysql://user:secret@localhost:1234/otherdatabase
                 dbname:                   database
                 host:                     localhost
                 port:                     1234
@@ -904,8 +855,7 @@ can configure. The following block shows all possible configuration keys:
                     # based on the platform. These defaults might be
                     # sub-optimal for backward compatibility reasons.
                     charset:              utf8mb4
-                    collate:              utf8mb4_unicode_ci # when using doctrine/dbal 2.x
-                    collation:            utf8mb4_unicode_ci # when using doctrine/dbal 3.x
+                    collation:            utf8mb4_unicode_ci
                     engine:               InnoDB
 
     .. code-block:: xml
@@ -983,16 +933,12 @@ can configure. The following block shows all possible configuration keys:
                     wrapper-class="MyDoctrineDbalConnectionWrapper"
                     charset=""
                     logging="%kernel.debug%"
-                    platform-service="MyOwnDatabasePlatformService"
                     auto-commit="false"
                     schema-filter="^sf2_"
                 >
                     <doctrine:option key="foo">bar</doctrine:option>
                     <doctrine:mapping-type name="enum">string</doctrine:mapping-type>
                     <doctrine:default-table-option name="charset">utf8mb4</doctrine:default-table-option>
-                    <!-- when using doctrine/dbal 2.x -->
-                    <doctrine:default-table-option name="collate">utf8mb4_unicode_ci</doctrine:default-table-option>
-                    <!-- when using doctrine/dbal 3.x -->
                     <doctrine:default-table-option name="collation">utf8_unicode_ci</doctrine:default-table-option>
                     <doctrine:default-table-option name="engine">InnoDB</doctrine:default-table-option>
                     <doctrine:type name="custom">Acme\HelloBundle\MyCustomType</doctrine:type>

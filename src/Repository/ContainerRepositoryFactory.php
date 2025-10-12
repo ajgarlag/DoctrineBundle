@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Doctrine\Bundle\DoctrineBundle\Repository;
 
 use Doctrine\Bundle\DoctrineBundle\DependencyInjection\Compiler\ServiceRepositoryCompilerPass;
-use Doctrine\Deprecations\Deprecation;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Mapping\ClassMetadata;
@@ -22,11 +21,11 @@ use function sprintf;
 
 /**
  * Fetches repositories from the container or falls back to normal creation.
+ *
+ * @internal
  */
 final class ContainerRepositoryFactory implements RepositoryFactory
 {
-    use RepositoryFactoryCompatibility;
-
     /** @var array<string, ObjectRepository> */
     private array $managedRepositories = [];
 
@@ -37,14 +36,15 @@ final class ContainerRepositoryFactory implements RepositoryFactory
     }
 
     /**
+     * Gets the repository for an entity class.
+     *
      * @param class-string<T> $entityName
      *
-     * @return ObjectRepository<T>
-     * @phpstan-return ($strictTypeCheck is true ? EntityRepository<T> : ObjectRepository<T>)
+     * @return EntityRepository<T>
      *
      * @template T of object
      */
-    private function doGetRepository(EntityManagerInterface $entityManager, string $entityName, bool $strictTypeCheck): ObjectRepository
+    public function getRepository(EntityManagerInterface $entityManager, string $entityName): EntityRepository
     {
         $metadata            = $entityManager->getClassMetadata($entityName);
         $repositoryServiceId = $metadata->customRepositoryClassName;
@@ -55,26 +55,15 @@ final class ContainerRepositoryFactory implements RepositoryFactory
             if ($this->container->has($customRepositoryName)) {
                 $repository = $this->container->get($customRepositoryName);
 
-                if (! $repository instanceof EntityRepository && $strictTypeCheck) {
-                    throw new RuntimeException(sprintf('The service "%s" must extend EntityRepository (e.g. by extending ServiceEntityRepository), "%s" given.', $repositoryServiceId, get_debug_type($repository)));
-                }
-
-                if (! $repository instanceof ObjectRepository) {
-                    throw new RuntimeException(sprintf('The service "%s" must implement ObjectRepository (or extend a base class, like ServiceEntityRepository), "%s" given.', $repositoryServiceId, get_debug_type($repository)));
-                }
-
                 if (! $repository instanceof EntityRepository) {
-                    Deprecation::trigger(
-                        'doctrine/doctrine-bundle',
-                        'https://github.com/doctrine/DoctrineBundle/pull/1722',
-                        'The service "%s" of type "%s" should extend "%s", not doing so is deprecated.',
+                    throw new RuntimeException(sprintf(
+                        'The service "%s" must extend EntityRepository (e.g. by extending ServiceEntityRepository), "%s" given.',
                         $repositoryServiceId,
                         get_debug_type($repository),
-                        EntityRepository::class,
-                    );
+                    ));
                 }
 
-                /** @phpstan-var ObjectRepository<T> */
+                /** @phpstan-var EntityRepository<T> */
                 return $repository;
             }
 

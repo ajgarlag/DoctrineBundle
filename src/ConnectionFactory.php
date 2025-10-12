@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Doctrine\Bundle\DoctrineBundle;
 
-use Doctrine\Common\EventManager;
 use Doctrine\DBAL\Configuration;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Connection\StaticServerVersionProvider;
@@ -19,23 +18,21 @@ use Doctrine\DBAL\Platforms\AbstractMySQLPlatform;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Tools\DsnParser;
 use Doctrine\DBAL\Types\Type;
-use Doctrine\Deprecations\Deprecation;
-use InvalidArgumentException;
 
 use function array_merge;
-use function class_exists;
-use function func_num_args;
-use function is_array;
 use function is_subclass_of;
-use function method_exists;
 
 use const PHP_EOL;
 
-/** @phpstan-import-type Params from DriverManager */
-class ConnectionFactory
+/**
+ * @internal This class is not meant to be used outside this bundle
+ *
+ * @phpstan-import-type Params from DriverManager
+ */
+final class ConnectionFactory
 {
     /** @internal */
-    public const DEFAULT_SCHEME_MAP = [
+    public const array DEFAULT_SCHEME_MAP = [
         'db2'        => 'ibm_db2',
         'mssql'      => 'pdo_sqlsrv',
         'mysql'      => 'pdo_mysql',
@@ -63,66 +60,17 @@ class ConnectionFactory
     /**
      * Create a connection by name.
      *
-     * @param mixed[]                                 $params
-     * @param EventManager|array<string, string>|null $eventManagerOrMappingTypes
-     * @param array<string, string>                   $deprecatedMappingTypes
+     * @param mixed[]               $params
+     * @param array<string, string> $mappingTypes
      * @phpstan-param Params $params
-     *
-     * @return Connection
-     *
-     * @no-named-arguments
      */
     public function createConnection(
         array $params,
         Configuration|null $config = null,
-        EventManager|array|null $eventManagerOrMappingTypes = [],
-        array $deprecatedMappingTypes = [],
-    ) {
-        if (! method_exists(Connection::class, 'getEventManager') && $eventManagerOrMappingTypes instanceof EventManager) {
-            throw new InvalidArgumentException('Passing an EventManager instance is not supported with DBAL > 3');
-        }
-
-        if (is_array($eventManagerOrMappingTypes) && func_num_args() === 4) {
-            throw new InvalidArgumentException('Passing mapping types both as 3rd and 4th argument makes no sense.');
-        }
-
-        if ($eventManagerOrMappingTypes instanceof EventManager) {
-            // DBAL 3
-            $eventManager = $eventManagerOrMappingTypes;
-            $mappingTypes = $deprecatedMappingTypes;
-        } elseif (is_array($eventManagerOrMappingTypes)) {
-            // Future signature
-            $eventManager = null;
-            $mappingTypes = $eventManagerOrMappingTypes;
-        } else {
-            // Legacy signature
-            if (! method_exists(Connection::class, 'getEventManager')) {
-                Deprecation::trigger(
-                    'doctrine/doctrine-bundle',
-                    'https://github.com/doctrine/DoctrineBundle/pull/1976',
-                    'Passing mapping types as 4th argument to %s is deprecated when using DBAL 4 and will not be supported in version 3.0 of the bundle. Pass them as 3rd argument instead.',
-                    __METHOD__,
-                );
-            }
-
-            $eventManager = null;
-            $mappingTypes = $deprecatedMappingTypes;
-        }
-
+        array $mappingTypes = [],
+    ): Connection {
         if (! $this->initialized) {
             $this->initializeTypes();
-        }
-
-        $overriddenOptions = [];
-        /** @phpstan-ignore isset.offset (We should adjust when https://github.com/phpstan/phpstan/issues/12414 is fixed) */
-        if (isset($params['connection_override_options'])) {
-            Deprecation::trigger(
-                'doctrine/doctrine-bundle',
-                'https://github.com/doctrine/DoctrineBundle/pull/1342',
-                'The "connection_override_options" connection parameter is deprecated',
-            );
-            $overriddenOptions = $params['connection_override_options'];
-            unset($params['connection_override_options']);
         }
 
         $params = $this->parseDatabaseUrl($params);
@@ -139,48 +87,28 @@ class ConnectionFactory
         }
 
         /** @phpstan-ignore-next-line We should adjust when https://github.com/phpstan/phpstan/issues/12414 is fixed */
-        if (! isset($params['pdo']) && (! isset($params['charset']) || $overriddenOptions || isset($params['dbname_suffix']))) {
+        if (! isset($params['pdo']) && (! isset($params['charset']) || isset($params['dbname_suffix']))) {
             $wrapperClass = null;
 
             if (isset($params['wrapperClass'])) {
                 if (! is_subclass_of($params['wrapperClass'], Connection::class)) {
-                    if (class_exists(InvalidWrapperClass::class)) {
-                        throw InvalidWrapperClass::new($params['wrapperClass']);
-                    }
-
-                    /* @phpstan-ignore staticMethod.notFound */
-                    throw DBALException::invalidWrapperClass($params['wrapperClass']);
+                    throw InvalidWrapperClass::new($params['wrapperClass']);
                 }
 
                 $wrapperClass           = $params['wrapperClass'];
                 $params['wrapperClass'] = null;
             }
 
-            $connection = DriverManager::getConnection(...array_merge([$params, $config], $eventManager ? [$eventManager] : []));
-            $params     = $this->addDatabaseSuffix(array_merge($connection->getParams(), $overriddenOptions));
+            $connection = DriverManager::getConnection($params, $config);
+            $params     = $this->addDatabaseSuffix($connection->getParams());
             $driver     = $connection->getDriver();
-            /** @phpstan-ignore arguments.count (DBAL < 4.x doesn't accept an argument) */
-            $platform = $driver->getDatabasePlatform(
-                ...(class_exists(StaticServerVersionProvider::class)
-                    ? [new StaticServerVersionProvider($params['serverVersion'] ?? $params['primary']['serverVersion'] ?? '')]
-                    : []
-                ),
-            );
+            $platform   = $driver->getDatabasePlatform(new StaticServerVersionProvider(
+                $params['serverVersion'] ?? $params['primary']['serverVersion'] ?? '',
+            ));
 
             if (! isset($params['charset'])) {
                 if ($platform instanceof AbstractMySQLPlatform) {
                     $params['charset'] = 'utf8mb4';
-
-                    if (isset($params['defaultTableOptions']['collate'])) {
-                        Deprecation::trigger(
-                            'doctrine/doctrine-bundle',
-                            'https://github.com/doctrine/dbal/issues/5214',
-                            'The "collate" default table option is deprecated in favor of "collation" and will be removed in doctrine/doctrine-bundle 3.0. ',
-                        );
-                        $params['defaultTableOptions']['collation'] = $params['defaultTableOptions']['collate'];
-                        unset($params['defaultTableOptions']['collate']);
-                    }
-
                     if (! isset($params['defaultTableOptions']['collation'])) {
                         $params['defaultTableOptions']['collation'] = 'utf8mb4_unicode_ci';
                     }
@@ -195,9 +123,9 @@ class ConnectionFactory
                 $wrapperClass = Connection::class;
             }
 
-            $connection = new $wrapperClass($params, $driver, $config, $eventManager);
+            $connection = new $wrapperClass($params, $driver, $config);
         } else {
-            $connection = DriverManager::getConnection(...array_merge([$params, $config], $eventManager ? [$eventManager] : []));
+            $connection = DriverManager::getConnection($params, $config);
         }
 
         if (! empty($mappingTypes)) {
@@ -225,10 +153,7 @@ class ConnectionFactory
         try {
             return $connection->getDatabasePlatform();
         } catch (DriverException $driverException) {
-            $class = class_exists(DBALException::class) ? DBALException::class : ConnectionException::class;
-
-            /* @phpstan-ignore new.interface */
-            throw new $class(
+            throw new ConnectionException(
                 'An exception occurred while establishing a connection to figure out your platform version.' . PHP_EOL .
                 "You can circumvent this by setting a 'server_version' configuration value" . PHP_EOL . PHP_EOL .
                 'For further information have a look at:' . PHP_EOL .
@@ -321,11 +246,7 @@ class ConnectionFactory
         // If a schemeless connection URL is given, we require a default driver or default custom driver
         // as connection parameter.
         if (! isset($params['driverClass']) && ! isset($params['driver'])) {
-            if (class_exists(DriverRequired::class)) {
-                throw DriverRequired::new($params['url']);
-            }
-
-            throw DBALException::driverRequired($params['url']);
+            throw DriverRequired::new($params['url']);
         }
 
         unset($params['url']);
